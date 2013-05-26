@@ -25,14 +25,15 @@ require("classes/class.WPHelper.php");
 					<ul class="nav nav-list">
 						 <li class="nav-header">Default Post Types</li>
 					    <?php foreach (WPHelper::get_post_types('default') as $key => $value): ?>
-				     		<li><a href="#/posts/<?=$value;?>"><?= $value;?> </a></li>
+				     		<li data-type="<?=$value;?>"><a href="#/posts/<?=$value;?>"><?= $value;?> </a></li>
 				     	<?php endforeach ?>
 				     	<li class="nav-header">Custom Post Types</li>
 					    <?php foreach (WPHelper::get_post_types('custom') as $key => $value): ?>
-				     		<li><a href="#/posts/<?=$value;?>"><?= $value;?> </a></li>
+				     		<li data-type="<?=$value;?>"><a href="#/posts/<?=$value;?>"><?= $value;?> </a></li>
 				     	<?php endforeach ?>
 					</ul>
 				</div>
+				<hr>
     	</div>
     	<div class="span8">
 			<h1>REST API v1.0 Resources </h1>

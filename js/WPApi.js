@@ -10,6 +10,8 @@ controller("MainController", function($scope) {
 
 
 function ResourceDetailController($scope, $routeParams, $location)
-{
+{	
 	$scope.name = $routeParams.name;
+	angular.element("li").removeClass("active");
+	angular.element('li[data-type="'+$scope.name+'"]').addClass("active");
 }	
