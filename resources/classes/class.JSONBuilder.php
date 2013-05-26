@@ -8,7 +8,7 @@ interface IPostBuilder
     public function build_featured_image();
     public function outputJSON();
 }
-class AbstractBuilder {
+class BuildHelper {
 	public function __construct() {
 
 	}
@@ -30,7 +30,7 @@ class AbstractBuilder {
 		return get_posts(array("post_type" => "attachment", "post_parent" => $post_id));
 	}
 }
-class JSONBuilder extends AbstractBuilder implements IPostBuilder  {
+class JSONBuilder extends BuildHelper implements IPostBuilder  {
 	
 	var $posts = NULL;
 	var $post = NULL;
