@@ -2,22 +2,16 @@
 require('../../wp-load.php');
 require '../Slim/Slim.php';
 require('classes/class.JSONBuilder.php');
+require('classes/class.WPPostArgumentsBuilder.php');
 
 \Slim\Slim::registerAutoloader();
 $app = new \Slim\Slim();
 
 $app->get('/posts/:name/?', function ($name) {
-	/* 	arguments can be set in the URL as Query String. See: http://codex.wordpress.org/Function_Reference/get_posts 
-		example: ?posts_per_page=-1&order=ASC&orderby=title
-	*/
-	parse_str($_SERVER['QUERY_STRING'], $args);
-	if (array_key_exists('post_type', $args)) {
-    	throw new Exception('post_type query parameter is not permitted in query string url');
-	}
+	
+	$queryArgumentsBuilder = new WPPostArgumentsBuilder($_SERVER['QUERY_STRING']);
 
-	$args = array_merge($args, array("post_type" => $name));
-
-	$posts = get_posts($args);
+	$posts = get_posts($queryArgumentsBuilder->build($name));
 	
 	if(count($posts) <= 0)
 	{
