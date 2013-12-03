@@ -7,8 +7,14 @@ require('classes/class.JSONBuilder.php');
 $app = new \Slim\Slim();
 
 $app->get('/posts/:name/?', function ($name) {
+	/* 	arguments can be set in the URL as Query String. See: http://codex.wordpress.org/Function_Reference/get_posts 
+		example: ?posts_per_page=-1&order=ASC&orderby=title
+	*/
+	parse_str($_SERVER['QUERY_STRING'], $args);
+	$args = array_merge($args, array("post_type" => $name));
+
+	$posts = get_posts($args);
 	
-	$posts = get_posts(array("post_type" => $name));
 	if(count($posts) <= 0)
 	{
 		throw new Exception('No posts found!');
