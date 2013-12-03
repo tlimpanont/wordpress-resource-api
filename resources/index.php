@@ -11,6 +11,10 @@ $app->get('/posts/:name/?', function ($name) {
 		example: ?posts_per_page=-1&order=ASC&orderby=title
 	*/
 	parse_str($_SERVER['QUERY_STRING'], $args);
+	if (array_key_exists('post_type', $args)) {
+    	throw new Exception('post_type query parameter is not permitted in query string url');
+	}
+
 	$args = array_merge($args, array("post_type" => $name));
 
 	$posts = get_posts($args);
