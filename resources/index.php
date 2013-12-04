@@ -1,11 +1,17 @@
 <?php
 require('../../wp-load.php');
 require '../Slim/Slim.php';
-require('classes/class.JSONBuilder.php');
+require('classes/class.WPPostBuilder.php');
 require('classes/class.WPPostArgumentsBuilder.php');
+require('classes/class.WPTaxonomyBuilder.php');
 
 \Slim\Slim::registerAutoloader();
+\Slim\Route::setDefaultConditions(array(
+    'id' => '\d+',
+    'name' => '\w+'
+));
 $app = new \Slim\Slim();
+
 
 $app->get('/posts/:name/?', function ($name) {
 	
@@ -13,18 +19,13 @@ $app->get('/posts/:name/?', function ($name) {
 
 	$posts = get_posts($queryArgumentsBuilder->build($name));
 	
-	if(count($posts) <= 0)
-	{
+	if(empty($posts))
 		throw new Exception('No posts found!');
-	}
+	
 
-	$builder = new JSONBuilder($posts);
-	$builder->convert_wp_gallery_shortcodes();
-	$builder->build_custom_fields();
-	$builder->build_featured_image();
-	$builder->build_post_thumbnails();
-	$builder->build_post_attachments();   
-   	$builder->outputJSON();
+	$builder = new WPPostBuilder($posts);
+	$builder->build();
+	$builder->outputJSON();
 });
 
 $app->get('/posts/id/:id/?', function($id) {
@@ -34,17 +35,13 @@ $app->get('/posts/id/:id/?', function($id) {
 	if(count($digit) > 0)
 	{
 		$post = get_post($id);
-		if(count($post) <= 0)
+		if(empty($post))
 		{
 			throw new Exception('No post found!');
 		}
 
-		$builder = new JSONBuilder($post);
-		$builder->convert_wp_gallery_shortcodes();
-		$builder->build_custom_fields();
-		$builder->build_featured_image();
-		$builder->build_post_thumbnails();
-		$builder->build_post_attachments();  
+		$builder = new WPPostBuilder($post);
+		$builder->build();
 		$builder->outputJSON();
 	}
 	else
@@ -52,5 +49,28 @@ $app->get('/posts/id/:id/?', function($id) {
 	  	throw new Exception('Param: ' . $id . " must be an integer");
 	}
 });
+
+$app->get('/taxonomies/?' , function() {
+  $taxonomies = get_taxonomies("", "all");
+  if(empty($taxonomies))
+  		throw new Exception('No taxonomies found!');
+
+  $builder = new WPTaxonomyBuilder($taxonomies);
+  $builder->override_output(array());
+  $builder->build();
+  $builder->outputJSON();
+});
+
+$app->get('/taxonomies/:name?' , function($name) {
+  $taxonomy = get_taxonomy( $name );
+  if(empty($taxonomy))
+  		throw new Exception('No taxonomy found!');
+
+  $builder = new WPTaxonomyBuilder( $taxonomy );
+  $builder->override_output(array());
+  $builder->build();
+  $builder->outputJSON();
+});
+
 
 $app->run();
