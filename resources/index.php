@@ -4,6 +4,7 @@ require '../Slim/Slim.php';
 require('classes/class.WPPostBuilder.php');
 require('classes/class.WPPostArgumentsBuilder.php');
 require('classes/class.WPTaxonomyBuilder.php');
+require('classes/class.WPTermBuilder.php');
 
 \Slim\Slim::registerAutoloader();
 \Slim\Route::setDefaultConditions(array(
@@ -70,6 +71,10 @@ $app->get('/taxonomies/:name?' , function($name) {
   $builder->override_output(array());
   $builder->build();
   $builder->outputJSON();
+});
+
+$app->get('/terms/?' , function() {
+	
 });
 
 
