@@ -1,5 +1,5 @@
 <?php 
-require("../wp-load.php");
+require("../../wp-load.php");
 require("classes/class.WPHelper.php");
 
 ?>
